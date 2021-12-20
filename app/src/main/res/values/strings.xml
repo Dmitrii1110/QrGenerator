@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">QrGenerator</string>
-    <string name="name_bottom">Generate</string>
+    <string name="name_bottom_generate">Generate</string>
+    <string name="name_bottom_scanner">Scanner</string>
 </resources>
