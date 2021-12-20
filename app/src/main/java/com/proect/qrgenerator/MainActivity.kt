@@ -1,18 +1,25 @@
 package com.proect.qrgenerator
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import com.google.zxing.WriterException
 
 class MainActivity : AppCompatActivity() {
     var im: ImageView? = null
     var bGenerate: Button? = null
     var bScanner: Button? = null
+    private lateinit var pLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +32,33 @@ class MainActivity : AppCompatActivity() {
         }
         bGenerate?.setOnClickListener {
             generateQrCode("QR код сгенерирован")
+        }
+
+        registerPermissionListener()
+        checkCameraPermission()
+    }
+
+    private fun checkCameraPermission(){
+        when{
+            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_GRANTED ->{
+                Toast.makeText(this,"Camera run", Toast.LENGTH_LONG).show()
+            }
+
+            else -> {
+                pLauncher.launch(arrayOf(Manifest.permission.CAMERA))
+            }
+        }
+    }
+
+    private fun registerPermissionListener(){
+        pLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()){
+            if(it[Manifest.permission.CAMERA] == true){
+                Toast.makeText(this,"Camera run", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this,"Permission denied", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
